@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Location_Finder</string>
+    <string name="title_activity_google_map">GoogleMap</string>
+    <string name="google_map_apikey">AIzaSyBSNyp6GQnnKlrMr7hD2HGiyF365tFlK5U</string>
+    <string name="add">Do you want you want to add this ?</string>
+    <string name="update">Do you want you want to Update this ?</string>
+
+</resources>
