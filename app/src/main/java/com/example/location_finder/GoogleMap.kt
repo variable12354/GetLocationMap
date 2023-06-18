@@ -35,6 +35,7 @@ import com.google.maps.android.PolyUtil
 import com.google.maps.model.DirectionsResult
 import com.google.maps.model.TravelMode
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.reflect.InvocationTargetException
 import java.text.NumberFormat
 
 
@@ -263,22 +264,22 @@ class GoogleMap : AppCompatActivity(), OnMapReadyCallback {
             val editloca = LatLng(elati!!, elong!!)
             mMap.addMarker(MarkerOptions().position(editloca).title(ename))
             mMap.moveCamera(CameraUpdateFactory.newLatLng(editloca))
-        }else{
-            val sydney = LatLng(-34.0, 151.0)
-            mMap.addMarker(MarkerOptions().position(sydney).title("place.name"))
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-        }
+        }else if(from.equals("Direction")){
+            val list = intent.getParcelableArrayListExtra<Locations>("listOfData")
+            Log.e("TAG", "onMapReadyList:$list ")
 
-        /*val locations = listOf(
-            LatLng(37.7749, -122.4194),  // San Francisco
-            LatLng(34.0522, -118.2437),  // Los Angeles
-            LatLng(47.6097, -122.3331)   // Seattle
-        )*/
+/*
+            // static list of data
+            val locations = listOf(
+                LatLng(37.7749, -122.4194),  // San Francisco
+                LatLng(34.0522, -118.2437),  // Los Angeles
+                LatLng(47.6097, -122.3331)   // Seattle
+            )
+            drawRoute(locations)
+            Log.e("TAG", "onMapReadylong:$locations ")
+*/
 
-
-        if (from.equals("Direction"))
-        {
-           /* locationViewModel.locationList.observe(this@GoogleMap){
+            /* locationViewModel.locationList.observe(this@GoogleMap){
                 val locationsList = ArrayList<LatLng>()
                 it.forEach { list->
                     val latlongs = LatLng(list.lati,list.longitude)
@@ -288,16 +289,25 @@ class GoogleMap : AppCompatActivity(), OnMapReadyCallback {
                 drawRoute(locationsList)
             }*/
 
-            val locations = listOf(
-            LatLng(37.7749, -122.4194),  // San Francisco
-            LatLng(34.0522, -118.2437),  // Los Angeles
-            LatLng(47.6097, -122.3331)   // Seattle
-        )
-            drawRoute(locations)
 
+            // Dynamic List data
+            val locationsList = ArrayList<LatLng>()
+            list?.forEach {list1->
+                val latlongs = LatLng(list1.lati,list1.longitude)
+                locationsList.add(latlongs)
+            }
+            Log.e("TAG", "onMapReadylat:$locationsList ")
+            try {
+                drawRoute(locationsList)
+            } catch (e: InvocationTargetException) {
+                println(e.cause)
+            }
         }
-
-
+        else{
+            val sydney = LatLng(-34.0, 151.0)
+            mMap.addMarker(MarkerOptions().position(sydney).title("place.name"))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,10f))
+        }
     }
 
     private fun drawRoute(locations: List<LatLng>) {
@@ -313,14 +323,14 @@ class GoogleMap : AppCompatActivity(), OnMapReadyCallback {
                 val points = decodePolyline(directionsResult.routes[0].overviewPolyline.encodedPath)
                 val polylineOptions = PolylineOptions()
                 polylineOptions.color(Color.RED)
-                polylineOptions.width(5f)
+                polylineOptions.width(10f)
                 polylineOptions.addAll(points)
                 mMap.addPolyline(polylineOptions)
             }
         }
 
         // Move camera to the first location
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(locations.first()))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locations.first(),10f))
     }
 
     private fun getDirections(origin: LatLng, destination: LatLng): DirectionsResult? {

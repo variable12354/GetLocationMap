@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -69,9 +70,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.floatingActionButton.setOnClickListener {
-            val intent = Intent(this@MainActivity,GoogleMap::class.java)
-            intent.putExtra("From","Direction")
-            startActivity(intent)
+            locationViewModel.locationList.observe(this@MainActivity){
+                val listdata:ArrayList<Locations> = ArrayList()
+                it.forEach {it2->
+                    listdata.add(it2)
+                }
+
+                val intent = Intent(this@MainActivity,GoogleMap::class.java)
+                intent.putExtra("From","Direction")
+                intent.putExtra("listOfData",listdata)
+                startActivity(intent)
+            }
+
         }
 
         locationViewModel.locationList.observe(this){

@@ -1,11 +1,13 @@
 package com.example.location_finder.Model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
 
-
+@Parcelize
 @Entity(tableName = "Locations")
 data class Locations(
 
@@ -24,7 +26,7 @@ data class Locations(
     @ColumnInfo(name = "Distance")
     var distance:Float
 
-){
+):Parcelable{
     @PrimaryKey(autoGenerate = true)
     var id:Int? = null
 
