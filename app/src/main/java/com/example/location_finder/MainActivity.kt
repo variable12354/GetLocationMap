@@ -217,6 +217,6 @@ class MainActivity : AppCompatActivity() {
 
         Log.e("TAG", "distance-${loc1.distanceTo(loc2)} ")
         Log.e("TAG", "dis-${format(mtr)} ")
-        return (mtr/10000) // km
+        return (mtr/1000) // km
     }
 }
